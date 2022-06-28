@@ -14,11 +14,11 @@ class myFirstTest extends TestCase
      * @return void
      */
 
-    public function test_the_web_it_is_online()
+    public function test_example()
     {
-        $page = $this->get('https://cuatroenlinea.ddev.site/jugar/1');
+        $response = $this->get('/');
 
-        $page->assertStatus(200);
+        $response->assertStatus(200);
     }
 
     public function test_red(){
@@ -40,19 +40,5 @@ class myFirstTest extends TestCase
         $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/1');
 
         $this->assertTrue(substr_count($html,'bg-gray-200') == 41);
-    }
-
-    public function test_next_movement(){
-
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/1');
-
-        $this->assertTrue(substr_count($html,'hover:animate-spin') == 7);
-    }
-
-    public function test_i_am_not_ready_for_this(){
-
-        $page = $this->get('https://cuatroenlinea.ddev.site/jugar/1111112222223333334444445555556666667777771');
-
-        $page->assertStatus(200);
     }
 }
