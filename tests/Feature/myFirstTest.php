@@ -30,14 +30,14 @@ class myFirstTest extends TestCase
 
     public function test_blue(){
 
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/1212');
+        $html = file_get_contents('/jugar/1212');
 
         $this->assertTrue(substr_count($html,'bg-sky-500') == 2);
     }
 
     public function test_table(){
 
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/1');
+        $html = file_get_contents('/jugar/1');
 
         $this->assertTrue(substr_count($html,'bg-gray-200') == 41);
     }
