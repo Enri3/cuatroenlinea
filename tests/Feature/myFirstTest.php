@@ -23,7 +23,7 @@ class myFirstTest extends TestCase
 
     public function test_red(){
 
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/31313');
+        $html = file_get_contents('/jugar/31313');
 
         $this->assertTrue(substr_count($html,'bg-red-500') == 3);
     }
