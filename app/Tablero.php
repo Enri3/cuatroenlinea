@@ -5,9 +5,10 @@ use App\Piece;
 
 interface interfaseTablero{
 
-    public function ponerFicha(int $col, array $colorFicha) //pone una ficha en el tablero.
-    public function iniciarTablero() //inicializa el tablero y las dimenciones en 0.
-    public function sacarFicha(int $col, int $fil) //saca la ficha especificada.
+    public function ponerFicha(int $col, array $colorFicha); //pone una ficha en el tablero.
+    public function iniciarTablero(); //inicializa el tablero y las dimenciones en 0.
+    public function sacarFicha(int $col, int $fil); //saca la ficha especificada.
+    public function retroMov(); //vuelve al tablero al estado de la jugada anterior.
 }
 
 class Tablero implements interfaseTablero{
@@ -16,6 +17,8 @@ class Tablero implements interfaseTablero{
     protected int $dim_y;
 
     protected array $tablero;
+
+    protected array $movimientos;
 }
 
 public function __construct(int $dim_x = 7, int $dim_y = 6){
@@ -24,8 +27,8 @@ public function __construct(int $dim_x = 7, int $dim_y = 6){
         throw new Exception('Las dimensiones deben tener al menos 4 de ancho y largo para poder jugar.');
     }
 
-    $this->dim_x = $dim_x
-    $this->dim_y = $dim_y
+    $this->dim_x = $dim_x;
+    $this->dim_y = $dim_y;
 }
 
 public function ponerFicha(int $col, array $colorFicha){
@@ -43,6 +46,8 @@ public function ponerFicha(int $col, array $colorFicha){
     }
 
     $this->tablero[$col]->append($colorFicha);
+
+    $this->movimientos->append($col)
 }
 
 public function iniciarTablero(){
@@ -68,5 +73,12 @@ public function sacarFicha(int $col, int $fil){
     }
 
     $this->tablero[$col][$fil] = '';
+}
+
+public function retroMov(){//falta terminar
+
+    $this->tablero[]
+
+    array_pop($this->movimientos);
 }
 ?>
