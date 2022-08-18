@@ -6,6 +6,7 @@ use App\Piece;
 interface interfaseTablero{
 
     public function ponerFicha(int $col, array $colorFicha) //pone una ficha en el tablero.
+    public function iniciarTablero() //inicializa el tablero y las dimenciones en 0.
 }
 
 class Tablero implements interfaseTablero{
@@ -43,4 +44,15 @@ public function ponerFicha(int $col, array $colorFicha){
     $this->tablero[$col]->append($colorFicha);
 }
 
+public function iniciarTablero(){
+
+    for ($i=0; $i <= $this->dim_x; $i++){
+        for ($h=0; $h < $this->dim_y; $h++){
+            $this->tablero[dim_x][dim_y] = '';
+        }
+    }    
+
+    $this->dim_x = 0;
+    $this->dim_y = 0;
+}
 ?>
