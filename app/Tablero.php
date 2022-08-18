@@ -7,6 +7,7 @@ interface interfaseTablero{
 
     public function ponerFicha(int $col, array $colorFicha) //pone una ficha en el tablero.
     public function iniciarTablero() //inicializa el tablero y las dimenciones en 0.
+    public function sacarFicha(int $col, int $fil) //saca la ficha especificada.
 }
 
 class Tablero implements interfaseTablero{
@@ -54,5 +55,18 @@ public function iniciarTablero(){
 
     $this->dim_x = 0;
     $this->dim_y = 0;
+}
+
+public function sacarFicha(int $col, int $fil){
+
+    if($col < 0 || $fil < 0 || $col > $this->dim_x || $fil > $this->dim_y){
+        throw new Exception('Estas intentando sacar una ficha de fuera del tablero.');
+    }
+
+    if($this->tablero[$col][$fil] != ''){
+        throw new Exception('La ficha que intentas quitar no existe.');
+    }
+
+    $this->tablero[$col][$fil] = '';
 }
 ?>
