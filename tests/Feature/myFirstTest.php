@@ -23,30 +23,38 @@ class myFirstTest extends TestCase
 
     public function test_red(){
 
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/31313');
+        $html = $this->get('https://cuatroenlinea.ddev.site/jugar/31313');
 
-        $this->assertTrue(substr_count($html,'bg-red-500') == 3);
+        $red = preg_match_all('/<div class="bg-red/', $html->getContent());
+
+        $this->assertTrue($red === 3);
     }
 
     public function test_blue(){
 
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/1212');
+        $html = $this->get('https://cuatroenlinea.ddev.site/jugar/1212');
 
-        $this->assertTrue(substr_count($html,'bg-sky-500') == 2);
+        $blue = preg_match_all('/<div class="bg-sky/', $html->getContent());
+
+        $this->assertTrue($blue === 2);
     }
 
     public function test_table(){
 
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/1');
+        $html = $this->get('https://cuatroenlinea.ddev.site/jugar/1');
+    
+        $blue = preg_match_all('/<div class="bg-gray/', $html->getContent());
 
-        $this->assertTrue(substr_count($html,'bg-gray-200') == 41);
+        $this->assertTrue($blue === 41);
     }
 
     public function test_next_movement(){
 
-        $html = file_get_contents('https://cuatroenlinea.ddev.site/jugar/1');
+        $html = $this->get('https://cuatroenlinea.ddev.site/jugar/1');
 
-        $this->assertTrue(substr_count($html,'hover:animate-spin') == 7);
+        $spinners = preg_match_all('/hover:animate-spin/', $html->getContent());
+
+        $this->assertTrue($spinners === 7);
     }
 
     public function test_i_am_not_ready_for_this(){
