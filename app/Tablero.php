@@ -1,15 +1,15 @@
 <?php
 namespace App;
 
-use App\Piece;
+use App\Ficha;
 
 interface interfaseTablero{
 
-    public function ponerFicha(int $col, String $colorFicha); //pone una ficha en el tablero.
+    public function ponerFicha(int $col, Ficha $ficha); //pone una ficha en el tablero.
     public function iniciarTablero(); //inicializa el tablero y las dimenciones en 0.
     public function sacarFicha(int $col, int $fil); //saca la ficha especificada.
     public function retroMov(); //vuelve al tablero al estado de la jugada anterior.
-    public function acomodarTablero(); //acomoda las fichas flotantes del tablero en caso de que haya.
+    public function acomodarTablero(int $col, int $fil); //acomoda las fichas flotantes del tablero en caso de que haya.
     public function ultimaFicha(int $col); //devuelve la última ficha de la columna.
 }
 
@@ -18,7 +18,7 @@ class Tablero implements interfaseTablero{
     protected int $dim_x;
     protected int $dim_y;
 
-    protected array $tablero;
+    public array $tablero;
 
     protected array $movimientos;
 
@@ -36,17 +36,21 @@ class Tablero implements interfaseTablero{
         $this->iniciarTablero();
     }
 
-    public function ponerFicha(int $col, String $colorFicha){
+    public function ponerFicha(int $col, Ficha $ficha){
 
-        if($col < 0 || $col > $this->dim_x){
-            throw new Exception('No se pueden poner fichas por fuera del tablero.');
+        if($col < 1 || $col > $this->dim_x){
+            throw new \Exception('No se pueden poner fichas por fuera del tablero.');
         }
 
-        if($colorFicha != 'rojo' && $colorFicha != 'azul'){
-            throw new Exception('Solo se aceptan fichas rojas y azules.');
+        if($ficha->color != 'rojo' && $ficha->color != 'azul'){
+            throw new \Exception('Solo se aceptan fichas rojas y azules.');
+        }
+        
+        if($this->tablero[$col - 1][$this->dim_y - 1] == 'rojo' || $this->tablero[$col][$this->dim_y - 1] == 'azul'){
+            throw new \Exception('La columna esta llena, no se pueden ingresar más fichas.');
         }
 
-        $this->tablero[$col][$this->ultimaFicha($col) + 1] = $colorFicha;
+        $this->tablero[$col - 1][$this->ultimaFicha($col) + 1] = $ficha->color;
         
         array_push($this->movimientos, $col);
     }
@@ -62,42 +66,37 @@ class Tablero implements interfaseTablero{
 
     public function sacarFicha(int $col, int $fil){
 
-        if($col < 0 || $fil < 0 || $col > $this->dim_x || $fil > $this->dim_y){
-            throw new Exception('Estas intentando sacar una ficha de fuera del tablero.');
+        if($col < 1 || $fil < 1 || $col > $this->dim_x || $fil > $this->dim_y){
+            throw new \Exception('Estas intentando sacar una ficha de fuera del tablero.');
         }
 
-        if($this->tablero[$col][$fil] != 'rojo' && $this->tablero[$col][$fil] != 'azul'){
-            throw new Exception('La ficha que intentas quitar no existe.');
+        if($this->tablero[$col - 1][$fil - 1] != 'rojo' && $this->tablero[$col - 1][$fil - 1] != 'azul'){
+            throw new \Exception('La ficha que intentas quitar no existe.');
         }
 
-        $this->tablero[$col][$fil] = '';
+        $this->tablero[$col - 1][$fil - 1] = '';
 
-        $this->acomodarTablero();
+        $this->acomodarTablero($col, $fil);
     }
 
     public function retroMov(){
 
+        if($this->movimientos == []){
+          throw new \Exception('Aún no se han realizado movimientos.');
+        }
+        
         $this->tablero[end($this->movimientos)][$this->ultimaFicha(end($this->movimientos))] = '';
 
         array_pop($this->movimientos);
     }
 
-    public function acomodarTablero(){
+    public function acomodarTablero(int $col, int $fil){
 
-        for($i=0; $i < $this->dim_x && $bandera == 0; $i++){
-            for($h=$this->dim_y; $h > 0 && $bandera == 0; $h--){
-                if($this->tablero[$i][$h] == 'rojo' || $this->tablero[$i][$h] == 'azul'){
-                    if($this->tablero[$i][$h-1] == 'rojo' || $this->tablero[$i][$h-1] == 'azul'){
-                        $bandera = 1;
-                    }else{
-                        $ultfi = $this->ultimaFicha($i);
-                        if($ultfi != 0){
-                            $color = $this->tablero[$i][$h];
-                            $this->tablero[$i][$ultfi+1] = $color;
-                            $this->tablero[$i][$h] = '';
-                        }
-                    }
-                }
+        if($fil != $this->dim_y){
+            if($this->tablero[$col - 1][$fil] == 'rojo' || $this->tablero[$col - 1][$fil] == 'azul'){
+                $this->tablero[$col - 1][$fil - 1] = $this->tablero[$col - 1][$fil];
+                $this->tablero[$col - 1][$fil] = '';
+                $this->acomodarTablero($col, $fil + 1);
             }
         }
     }
@@ -105,9 +104,17 @@ class Tablero implements interfaseTablero{
     public function ultimaFicha(int $col){
 
         for($i=0; $i < $this->dim_y; $i++){
-            if($this->tablero[$col][$i] == 'rojo' || $this->tablero[$col][$i] == 'azul'){
-                if($this->tablero[$col][$i+1] == ''){
-                    return $i;
+            if($this->tablero[$col - 1][0] == ''){
+              return -1;
+            }else{
+                if($this->tablero[$col - 1][$i] == 'rojo' || $this->tablero[$col - 1][$i] == 'azul'){
+                    if($i == $this->dim_y - 1){
+                        return $i;
+                      }else{
+                        if($this->tablero[$col - 1][$i+1] == ''){
+                          return $i;
+                      }
+                    }
                 }
             }
         }
@@ -116,7 +123,10 @@ class Tablero implements interfaseTablero{
 }
 
 $tablero1 = new Tablero(5,5);
-$tablero1->ponerFicha(3,'rojo');
-$tablero1->ponerFicha(3,'rojo');
-echo($tablero1->ultimaFicha(3))
+$ficha1 = new Ficha('rojo');
+$ficha2 = new Ficha('azul');
+$tablero1->ponerFicha(3, $ficha1);
+$tablero1->ponerFicha(3, $ficha2);
+echo($tablero1->ultimaFicha(3));
+echo($tablero1->tablero[3][2]);
 ?>
